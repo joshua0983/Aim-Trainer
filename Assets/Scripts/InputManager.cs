@@ -37,6 +37,31 @@ public class InputManager : MonoBehaviour
         onFoot.Shoot.performed += ctx => Shoot();
     }
 
+    void Start()
+    {
+        // Hide and lock the cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    void Update()
+    {
+        // Check for the Escape key press to unlock the cursor and exit the game
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            #if UNITY_EDITOR
+            // Stop play mode in the editor
+            UnityEditor.EditorApplication.isPlaying = false;
+            #else
+            // Quit the application
+            Application.Quit();
+            #endif
+        }
+    }
+
     void FixedUpdate()
     {
         if (motor == null)
@@ -77,7 +102,8 @@ public class InputManager : MonoBehaviour
 
         Debug.Log("Shoot action performed");
 
-        Ray ray = look.cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        // Use the center of the screen for raycasting
+        Ray ray = look.cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
@@ -89,6 +115,22 @@ public class InputManager : MonoBehaviour
                 Debug.Log("Red dot hit by raycast!");
                 redDot.HandleClick(); // Call the public method
             }
+        }
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            // Lock and hide the cursor when the game window is focused
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            // Unlock and show the cursor when the game window is unfocused
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

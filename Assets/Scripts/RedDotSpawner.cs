@@ -29,6 +29,9 @@ public class RedDotSpawner : MonoBehaviour
             {
                 wallMin = wallRenderer.bounds.min;
                 wallMax = wallRenderer.bounds.max;
+
+                // Log the wall boundaries
+                Debug.Log($"Wall Min: {wallMin}, Wall Max: {wallMax}");
             }
             else
             {
@@ -47,17 +50,26 @@ public class RedDotSpawner : MonoBehaviour
             return;
         }
 
+        // Adjust the boundaries to limit the spawn area
+        float xRangeMin = wallMin.x + (wallMax.x - wallMin.x) * 0.2f; // 20% from the left
+        float xRangeMax = wallMax.x - (wallMax.x - wallMin.x) * 0.2f; // 20% from the right
+        float yRangeMin = wallMin.y + (wallMax.y - wallMin.y) * 0.1f; // 10% from the bottom
+        float yRangeMax = wallMax.y - (wallMax.y - wallMin.y) * 0.1f; // 10% from the top
+
         Vector3 randomPosition = new Vector3(
-            Random.Range(wallMin.x, wallMax.x),
-            Random.Range(wallMin.y, wallMax.y),
-            wall.position.z
+            Random.Range(xRangeMin, xRangeMax),
+            Random.Range(yRangeMin, yRangeMax),
+            wall.position.z - 1.5f // Adjust this value as needed to move the red dot in front of the wall
         );
+
+        Debug.Log($"Spawning Red Dot at: {randomPosition}");
 
         GameObject redDot = Instantiate(redDotPrefab, randomPosition, Quaternion.identity);
         RedDot redDotComponent = redDot.GetComponent<RedDot>();
         if (redDotComponent != null)
         {
             redDotComponent.Initialize(this, spawnDelay);
+            Debug.Log("Red Dot spawned successfully");
         }
         else
         {
