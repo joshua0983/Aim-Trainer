@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class RedDot : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class RedDot : MonoBehaviour
 
     public void Initialize(RedDotSpawner spawner, float respawnDelay)
     {
-        Debug.Log($"RedDot initialized with spawner: {spawner.name}");
         this.spawner = spawner;
         this.respawnDelay = respawnDelay;
     }
@@ -22,7 +22,6 @@ public class RedDot : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log("OnMouseDown called");
         HandleClick();
     }
 }

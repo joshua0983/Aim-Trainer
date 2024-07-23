@@ -14,8 +14,6 @@ public class RedDotSpawner : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"RedDotSpawner started on {gameObject.name}");
-
         if (redDotPrefab == null)
         {
             Debug.LogError("RedDotPrefab is not assigned in the Inspector");
@@ -33,6 +31,7 @@ public class RedDotSpawner : MonoBehaviour
                 wallMin = wallRenderer.bounds.min;
                 wallMax = wallRenderer.bounds.max;
 
+                // Log the wall boundaries
                 Debug.Log($"Wall Min: {wallMin}, Wall Max: {wallMax}");
             }
             else
@@ -46,8 +45,6 @@ public class RedDotSpawner : MonoBehaviour
 
     void SpawnRedDot()
     {
-        Debug.Log("SpawnRedDot called");
-
         if (redDotPrefab == null || wall == null || isSpawning)
         {
             Debug.LogError("Cannot spawn RedDot because redDotPrefab or wall is not assigned or another red dot is already spawning");
@@ -86,7 +83,6 @@ public class RedDotSpawner : MonoBehaviour
 
     public void RespawnRedDot(float delay)
     {
-        Debug.Log($"RespawnRedDot called with delay: {delay}");
         StartCoroutine(RespawnRedDotCoroutine(delay));
     }
 
