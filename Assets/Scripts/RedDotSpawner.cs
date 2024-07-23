@@ -10,9 +10,12 @@ public class RedDotSpawner : MonoBehaviour
 
     private Vector3 wallMin;
     private Vector3 wallMax;
+    private bool isSpawning = false;
 
     void Start()
     {
+        Debug.Log($"RedDotSpawner started on {gameObject.name}");
+
         if (redDotPrefab == null)
         {
             Debug.LogError("RedDotPrefab is not assigned in the Inspector");
@@ -30,7 +33,6 @@ public class RedDotSpawner : MonoBehaviour
                 wallMin = wallRenderer.bounds.min;
                 wallMax = wallRenderer.bounds.max;
 
-                // Log the wall boundaries
                 Debug.Log($"Wall Min: {wallMin}, Wall Max: {wallMax}");
             }
             else
@@ -44,11 +46,15 @@ public class RedDotSpawner : MonoBehaviour
 
     void SpawnRedDot()
     {
-        if (redDotPrefab == null || wall == null)
+        Debug.Log("SpawnRedDot called");
+
+        if (redDotPrefab == null || wall == null || isSpawning)
         {
-            Debug.LogError("Cannot spawn RedDot because redDotPrefab or wall is not assigned");
+            Debug.LogError("Cannot spawn RedDot because redDotPrefab or wall is not assigned or another red dot is already spawning");
             return;
         }
+
+        isSpawning = true;
 
         // Adjust the boundaries to limit the spawn area
         float xRangeMin = wallMin.x + (wallMax.x - wallMin.x) * 0.2f; // 20% from the left
@@ -74,17 +80,20 @@ public class RedDotSpawner : MonoBehaviour
         else
         {
             Debug.LogError("RedDotPrefab does not have a RedDot component");
+            isSpawning = false; // Ensure isSpawning is reset if there's an error
         }
     }
 
     public void RespawnRedDot(float delay)
     {
+        Debug.Log($"RespawnRedDot called with delay: {delay}");
         StartCoroutine(RespawnRedDotCoroutine(delay));
     }
 
     private IEnumerator RespawnRedDotCoroutine(float delay)
     {
         yield return new WaitForSeconds(delay);
+        isSpawning = false; // Allow spawning again after the delay
         SpawnRedDot();
     }
 }

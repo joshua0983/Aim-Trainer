@@ -2,25 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; 
 
 public class GameModeSelectionScript : MonoBehaviour
 {
-    public button BackButton;
-    // Start is called before the first frame update
+    public Button Flicking;
+    public Button EnemyShooting;
+    public Button BackButton; 
+    public Toggle toggle;
+    public static string GameMode;
+
+    public static bool StrafeEnabled { get; private set; }
     void Start()
     {
-        BackButton.onClick.AddListener(BackButton);
-        
+        Flicking.onClick.AddListener(FlickingButton);
+        BackButton.onClick.AddListener(GameModeSelectionBackButton); 
+        EnemyShooting.onClick.AddListener(EnemyShootingButton);
+        toggle.onValueChanged.AddListener(onToggleValueChanged);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    void BackButton()
+
+    void GameModeSelectionBackButton()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void FlickingButton()
+    {
+        SceneManager.LoadScene("Difficulty");
+        GameMode = "Flicking";
+    }
+    public void EnemyShootingButton()
+    {
+        SceneManager.LoadScene("Difficulty");
+        GameMode = "EnemyShooting";
+    }
+
+    public void onToggleValueChanged(bool value)
+    {
+        StrafeEnabled = value;
     }
 }

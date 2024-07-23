@@ -4,9 +4,11 @@ public class RedDot : MonoBehaviour
 {
     private RedDotSpawner spawner;
     private float respawnDelay;
+    public static string difficulty;
 
     public void Initialize(RedDotSpawner spawner, float respawnDelay)
     {
+        Debug.Log($"RedDot initialized with spawner: {spawner.name}");
         this.spawner = spawner;
         this.respawnDelay = respawnDelay;
     }
@@ -18,9 +20,9 @@ public class RedDot : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // Keep OnMouseDown for direct mouse clicks
     void OnMouseDown()
     {
+        Debug.Log("OnMouseDown called");
         HandleClick();
     }
 }

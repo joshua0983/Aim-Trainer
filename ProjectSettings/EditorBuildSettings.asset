@@ -9,13 +9,16 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 5820ea58d7a054b34b6c1a7076d8c2af
   - enabled: 1
-    path: Assets/Scenes/GameModeSelection.unity
-    guid: 43b3abcdc37f64d36afc4ffac714aecb
-  - enabled: 1
     path: Assets/Scenes/OptionsMenu.unity
     guid: 56e9fab3c6e92462c937229b7d7bb698
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/GameModeSelection.unity
+    guid: 43b3abcdc37f64d36afc4ffac714aecb
+  - enabled: 1
+    path: Assets/Scenes/Difficulty.unity
+    guid: 250e51ab58ecb42cf81dfe3fd1095700
+  - enabled: 1
+    path: Assets/Scenes/Flicking.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
