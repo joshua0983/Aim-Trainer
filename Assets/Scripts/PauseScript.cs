@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
 public class PauseScript : MonoBehaviour
 {
@@ -11,6 +8,7 @@ public class PauseScript : MonoBehaviour
     public Button OptionsButton;
     public Button ExitToMenuButton;
     public GameObject pauseMenuUI;
+    public GameObject optionsMenuUI; // Reference to duplicated options menu
 
     public bool IsPaused { get; private set; } = false;
 
@@ -20,6 +18,7 @@ public class PauseScript : MonoBehaviour
         OptionsButton.onClick.AddListener(OpenOptions);
         ExitToMenuButton.onClick.AddListener(ExitGame);
         pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(false); // Ensure it is inactive by default
     }
 
     public void PauseGame()
@@ -34,6 +33,7 @@ public class PauseScript : MonoBehaviour
     public void ContinueGame()
     {
         pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(false); // Ensure options menu is inactive
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -42,9 +42,17 @@ public class PauseScript : MonoBehaviour
 
     public void OpenOptions()
     {
-        NavigationManager.PreviousScene = SceneManager.GetActiveScene().name;
-        NavigationManager.CameFromPause = true;
-        SceneManager.LoadScene("OptionsMenu");
+        pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true); // Activate the options menu
+        OptionsMenuController.CameFromGame = true; // Indicate we came from the game
+        
+        // Set the options and pause menu references in OptionsMenuController
+        OptionsMenuController optionsController = optionsMenuUI.GetComponent<OptionsMenuController>();
+        if (optionsController != null)
+        {
+            optionsController.optionsMenuUI = optionsMenuUI;
+            optionsController.pauseMenuUI = pauseMenuUI;
+        }
     }
 
     public void ExitGame()
