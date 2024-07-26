@@ -1519,7 +1519,7 @@ GameObject:
   - component: {fileID: 1801001970}
   - component: {fileID: 1801001974}
   m_Layer: 5
-  m_Name: OptionsCanvs
+  m_Name: OptionsCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
