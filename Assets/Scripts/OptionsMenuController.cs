@@ -21,12 +21,21 @@ public class OptionsMenuController : MonoBehaviour
 
     public static bool CameFromGame = false; // Flag to indicate if options were opened from the game
 
+    private PlayerLook playerLook;
+
     void Start()
     {
         UpdateSensitivityText();
         increaseButton.onClick.AddListener(IncreaseSensitivity);
         decreaseButton.onClick.AddListener(DecreaseSensitivity);
         backButton.onClick.AddListener(BackButton);
+
+        // Find PlayerLook in the scene
+        playerLook = FindObjectOfType<PlayerLook>();
+        if (playerLook == null)
+        {
+            Debug.LogError("PlayerLook component not found in the scene.");
+        }
     }
 
     void UpdateSensitivityText()
@@ -40,6 +49,7 @@ public class OptionsMenuController : MonoBehaviour
         {
             sensitivity += sensitivityStep;
             UpdateSensitivityText();
+            UpdatePlayerLookSensitivity();
         }
     }
 
@@ -49,11 +59,24 @@ public class OptionsMenuController : MonoBehaviour
         {
             sensitivity -= sensitivityStep;
             UpdateSensitivityText();
+            UpdatePlayerLookSensitivity();
+        }
+    }
+
+    void UpdatePlayerLookSensitivity()
+    {
+        if (playerLook != null)
+        {
+            float scaledSensitivity = sensitivity * 100f; // Scale sensitivity to match PlayerLook's sensitivity range
+            playerLook.SetSensitivity(scaledSensitivity);
         }
     }
 
     void BackButton()
     {
+        Debug.Log("BackButton pressed");
+        Debug.Log("Previous Scene: " + NavigationManager.PreviousScene);
+
         if (CameFromGame)
         {
             // If we came from the game, switch back to the pause menu

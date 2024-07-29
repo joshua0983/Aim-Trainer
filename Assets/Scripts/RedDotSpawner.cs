@@ -6,7 +6,7 @@ public class RedDotSpawner : MonoBehaviour
 {
     public GameObject redDotPrefab;
     public Transform wall;
-    public float spawnDelay = 0.5f;
+    private float spawnDelay = 0.3f;
 
     private Vector3 wallMin;
     private Vector3 wallMax;
@@ -73,11 +73,32 @@ public class RedDotSpawner : MonoBehaviour
         {
             redDotComponent.Initialize(this, spawnDelay);
             Debug.Log("Red Dot spawned successfully");
+
+            // Handle automatic destruction for Medium and Hard difficulties
+            if (RedDot.difficulty == "Medium")
+            {
+                StartCoroutine(DestroyAndRespawn(redDot, 1f));
+            }
+            else if (RedDot.difficulty == "Hard")
+            {
+                StartCoroutine(DestroyAndRespawn(redDot, 0.5f));
+            }
         }
         else
         {
             Debug.LogError("RedDotPrefab does not have a RedDot component");
             isSpawning = false; // Ensure isSpawning is reset if there's an error
+        }
+    }
+
+    private IEnumerator DestroyAndRespawn(GameObject redDot, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (redDot != null)
+        {
+            Destroy(redDot);
+            isSpawning = false; // Allow spawning again after the delay
+            SpawnRedDot();
         }
     }
 

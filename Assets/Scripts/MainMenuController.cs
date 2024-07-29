@@ -8,6 +8,8 @@ public class MainMenuScript : MonoBehaviour
     public Button OptionsButton;
     public Button ExitButton;
 
+    private PlayerLook playerLook;
+
     void Start()
     {
         // Check if buttons are assigned in the Inspector

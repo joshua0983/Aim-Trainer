@@ -7,8 +7,8 @@ public class PlayerLook : MonoBehaviour
     public Camera cam;
     private float xRotation = 0f;
 
-    private float xSensitivity = 30f;
-    private float ySensitivity = 30f;
+    private float xSensitivity = 50f;
+    private float ySensitivity = 50f;
     
     public void ProcessLook(Vector2 input) 
     {
@@ -23,5 +23,11 @@ public class PlayerLook : MonoBehaviour
             cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
+    }
+
+    public void SetSensitivity(float sensitivity)
+    {
+        xSensitivity = sensitivity;
+        ySensitivity = sensitivity;
     }
 }
