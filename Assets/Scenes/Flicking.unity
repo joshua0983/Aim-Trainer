@@ -1390,7 +1390,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   redDotPrefab: {fileID: 8453307051354531604, guid: 2e446dcbe316942d49bbb2916825b3cf, type: 3}
   wall: {fileID: 729188575}
-  spawnDelay: 0.5
 --- !u!4 &837938413
 Transform:
   m_ObjectHideFlags: 0

@@ -11,28 +11,35 @@ public class OptionsMenuController : MonoBehaviour
     public Button decreaseButton;
     public Button backButton;
 
-    public GameObject optionsMenuUI; // Reference to options menu UI
-    public GameObject pauseMenuUI; // Reference to pause menu UI
+    public GameObject optionsMenuUI;
+    public GameObject pauseMenuUI;
 
-    private float sensitivity = 0.5f;
+    private float sensitivity;
     private const float sensitivityStep = 0.01f;
     private const float minSensitivity = 0.01f;
     private const float maxSensitivity = 1.0f;
 
-    public static bool CameFromGame = false; // Flag to indicate if options were opened from the game
+    public static bool CameFromGame = false;
 
     private PlayerLook playerLook;
 
     void Start()
     {
+        // Retrieve the saved sensitivity value from PlayerPrefs or set a default value
+        sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f);
         UpdateSensitivityText();
+
         increaseButton.onClick.AddListener(IncreaseSensitivity);
         decreaseButton.onClick.AddListener(DecreaseSensitivity);
         backButton.onClick.AddListener(BackButton);
 
         // Find PlayerLook in the scene
         playerLook = FindObjectOfType<PlayerLook>();
-        if (playerLook == null)
+        if (playerLook != null)
+        {
+            playerLook.SetSensitivity(sensitivity);
+        }
+        else
         {
             Debug.LogError("PlayerLook component not found in the scene.");
         }
@@ -67,9 +74,9 @@ public class OptionsMenuController : MonoBehaviour
     {
         if (playerLook != null)
         {
-            float scaledSensitivity = sensitivity * 100f; // Scale sensitivity to match PlayerLook's sensitivity range
-            playerLook.SetSensitivity(scaledSensitivity);
+            playerLook.SetSensitivity(sensitivity);
         }
+        PlayerPrefs.SetFloat("Sensitivity", sensitivity); // Save sensitivity to PlayerPrefs
     }
 
     void BackButton()
@@ -79,7 +86,6 @@ public class OptionsMenuController : MonoBehaviour
 
         if (CameFromGame)
         {
-            // If we came from the game, switch back to the pause menu
             optionsMenuUI.SetActive(false);
             pauseMenuUI.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
@@ -88,7 +94,6 @@ public class OptionsMenuController : MonoBehaviour
         }
         else
         {
-            // Otherwise, go back to the main menu
             if (!string.IsNullOrEmpty(NavigationManager.PreviousScene))
             {
                 SceneManager.LoadScene(NavigationManager.PreviousScene);

@@ -17,21 +17,43 @@ public class InputManager : MonoBehaviour
 
     private string[] gameScenes = { "Flicking", "EnemyShooting" };
 
-    void Awake()
+void Awake()
+{
+    // Initialize the PlayerInput and assign the OnFoot actions
+    playerInput = new PlayerInput();
+    onFoot = playerInput.OnFoot;
+
+    // Assign components from the same GameObject
+    motor = GetComponent<PlayerMotor>();
+    look = GetComponent<PlayerLook>();
+    pauseScript = FindObjectOfType<PauseScript>();  // This finds any PauseScript in the scene
+
+    // Debug logs to ensure components are assigned
+    if (motor == null)
     {
-        playerInput = new PlayerInput();
-        onFoot = playerInput.OnFoot;
-
-        motor = GetComponent<PlayerMotor>();
-        look = GetComponent<PlayerLook>();
-        pauseScript = FindObjectOfType<PauseScript>();
-
-        if (playerInput != null)
-        {
-            onFoot.Shoot.performed += ctx => Shoot();
-        }
+        Debug.LogError("PlayerMotor component is not found on this GameObject.");
     }
 
+    if (look == null)
+    {
+        Debug.LogError("PlayerLook component is not found on this GameObject.");
+    }
+
+    if (pauseScript == null)
+    {
+        Debug.LogError("PauseScript component is not found in the scene.");
+    }
+
+    // Check playerInput initialization
+    if (playerInput != null)
+    {
+        onFoot.Shoot.performed += ctx => Shoot();
+    }
+    else
+    {
+        Debug.LogError("PlayerInput is not initialized.");
+    }
+}
     void Start()
     {
         if (IsGameScene())
@@ -78,13 +100,23 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+void LateUpdate()
+{
+    if (look == null)
     {
-        if (look != null)
-        {
-            look.ProcessLook(onFoot.Look.ReadValue<Vector2>());
-        }
+        Debug.LogError("PlayerLook component is not assigned or found!");
+        return;  // Exit the method to avoid the null reference
     }
+
+    // No need to check for onFoot being null; instead, ensure playerInput is initialized
+    if (playerInput == null)
+    {
+        Debug.LogError("PlayerInput is not initialized!");
+        return;  // Exit the method to avoid the null reference
+    }
+
+    look.ProcessLook(onFoot.Look.ReadValue<Vector2>());
+}
 
     private void OnEnable()
     {
@@ -97,17 +129,33 @@ public class InputManager : MonoBehaviour
     }
 
     private void Shoot()
-    {
-        if (look == null || look.cam == null) return;
+{
+    if (look == null || look.cam == null) return;
 
-        Ray ray = look.cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit))
+    Ray ray = look.cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+    if (Physics.Raycast(ray, out RaycastHit hit))
+    {
+        Debug.Log($"Raycast hit: {hit.collider.name}, Tag: {hit.collider.tag}");
+
+        // Check if we hit the EnemyHead or EnemyBody
+        Enemy enemy = hit.collider.GetComponentInParent<Enemy>(); // Use GetComponentInParent
+        if (enemy != null)
         {
-            RedDot redDot = hit.collider.GetComponent<RedDot>();
-            if (redDot != null) redDot.HandleClick();
+            bool isHeadshot = hit.collider.CompareTag("EnemyHead");
+            Debug.Log(isHeadshot ? "Headshot detected!" : "Body hit detected!");
+            Debug.Log("Calling HandleHit on Enemy.");
+            enemy.HandleHit(isHeadshot); // Call the function
+        }
+        else
+        {
+            Debug.LogWarning("Enemy script not found on the hit object or its parent.");
         }
     }
-
+    else
+    {
+        Debug.Log("Raycast did not hit anything.");
+    }
+}
     void OnApplicationFocus(bool hasFocus)
     {
         if (hasFocus)

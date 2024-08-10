@@ -7,9 +7,16 @@ public class PlayerLook : MonoBehaviour
     public Camera cam;
     private float xRotation = 0f;
 
-    private float xSensitivity = 50f;
-    private float ySensitivity = 50f;
-    
+    private float xSensitivity;
+    private float ySensitivity;
+
+    void Start()
+    {
+        // Retrieve the saved sensitivity value from PlayerPrefs or set a default value
+        float savedSensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f);
+        SetSensitivity(savedSensitivity);
+    }
+
     public void ProcessLook(Vector2 input) 
     {
         float mouseX = input.x;
@@ -27,7 +34,10 @@ public class PlayerLook : MonoBehaviour
 
     public void SetSensitivity(float sensitivity)
     {
-        xSensitivity = sensitivity;
-        ySensitivity = sensitivity;
+        xSensitivity = sensitivity * 100; // Assuming sensitivity range is 0.01 to 1.0, scale it up
+        ySensitivity = sensitivity * 100;
+
+        // Save the sensitivity value to PlayerPrefs
+        PlayerPrefs.SetFloat("Sensitivity", sensitivity);
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,6 +8,9 @@ public class DifficultyScript : MonoBehaviour
     public Button easyButton;
     public Button mediumButton;
     public Button hardButton;
+
+    public static string difficulty; // Static variable to hold the difficulty level
+
     void Start()
     {
         easyButton.onClick.AddListener(EasyButton);
@@ -20,19 +21,27 @@ public class DifficultyScript : MonoBehaviour
 
     public void EasyButton()
     {
-        RedDot.difficulty = "Easy";
+        SetDifficulty("Easy");
         SceneManager.LoadScene(GameModeSelectionScript.GameMode);
     }
+
     public void MediumButton()
     {
-        RedDot.difficulty = "Medium";
+        SetDifficulty("Medium");
         SceneManager.LoadScene(GameModeSelectionScript.GameMode);
     }
+
     public void HardButton()
     {
-        RedDot.difficulty = "Hard";
+        SetDifficulty("Hard");
         SceneManager.LoadScene(GameModeSelectionScript.GameMode);
     }
+
+    private void SetDifficulty(string selectedDifficulty)
+    {
+        difficulty = selectedDifficulty;
+    }
+
     public void DifficultyBackButton()
     {
         SceneManager.LoadScene("GameModeSelection");
