@@ -14,11 +14,14 @@ public class RedDot : MonoBehaviour
     }
 
     public void HandleClick()
-    {
-        Debug.Log("Red dot clicked!");
-        spawner.RespawnRedDot(respawnDelay);
-        Destroy(gameObject);
-    }
+{
+    Debug.Log("Red dot clicked!");
+    spawner.RespawnRedDot(respawnDelay);
+
+    ScoreManager.Instance?.AddScore(1);
+
+    Destroy(gameObject);
+}
 
     void OnMouseDown()
     {

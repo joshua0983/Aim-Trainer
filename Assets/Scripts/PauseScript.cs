@@ -22,23 +22,37 @@ public class PauseScript : MonoBehaviour
     }
 
     public void PauseGame()
-    {
-        pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        IsPaused = true;
-    }
+{
+    pauseMenuUI.SetActive(true);
+    Time.timeScale = 0f;
+    Cursor.lockState = CursorLockMode.None;
+    Cursor.visible = true;
+    IsPaused = true;
 
-    public void ContinueGame()
+    // Pause the timer
+    GameTimer gameTimer = FindObjectOfType<GameTimer>();
+    if (gameTimer != null)
     {
-        pauseMenuUI.SetActive(false);
-        optionsMenuUI.SetActive(false); // Ensure options menu is inactive
-        Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        IsPaused = false;
+        gameTimer.PauseTimer();
     }
+}
+
+public void ContinueGame()
+{
+    pauseMenuUI.SetActive(false);
+    optionsMenuUI.SetActive(false); // Ensure options menu is inactive
+    Time.timeScale = 1f;
+    Cursor.lockState = CursorLockMode.Locked;
+    Cursor.visible = false;
+    IsPaused = false;
+
+    // Resume the timer
+    GameTimer gameTimer = FindObjectOfType<GameTimer>();
+    if (gameTimer != null)
+    {
+        gameTimer.ResumeTimer();
+    }
+}
 
     public void OpenOptions()
     {

@@ -41,19 +41,22 @@ public class Enemy : MonoBehaviour
 }
 
     private void DestroyEnemy()
+{
+    Debug.Log("Destroying enemy now.");
+    
+    // Add score
+    ScoreManager.Instance?.AddScore(1); // Adjust score amount as needed
+    
+    // Check if the spawner is not null to avoid null reference exception
+    if (spawner != null)
     {
-        Debug.Log("Destroying enemy now.");
-        
-        // Check if the spawner is not null to avoid null reference exception
-        if (spawner != null)
-        {
-            spawner.EnemyDefeated();
-        }
-        else
-        {
-            Debug.LogError("Spawner reference is missing!");
-        }
-        
-        Destroy(gameObject); // Destroy the entire enemy GameObject
+        spawner.EnemyDefeated();
     }
+    else
+    {
+        Debug.LogError("Spawner reference is missing!");
+    }
+    
+    Destroy(gameObject); // Destroy the entire enemy GameObject
+}
 }

@@ -137,6 +137,14 @@ void LateUpdate()
     {
         Debug.Log($"Raycast hit: {hit.collider.name}, Tag: {hit.collider.tag}");
 
+        // Check if we hit a RedDot
+        RedDot redDot = hit.collider.GetComponent<RedDot>();
+        if (redDot != null)
+        {
+            redDot.HandleClick(); // Handle the RedDot click
+            return; // Exit the method after handling RedDot
+        }
+
         // Check if we hit the EnemyHead or EnemyBody
         Enemy enemy = hit.collider.GetComponentInParent<Enemy>(); // Use GetComponentInParent
         if (enemy != null)
@@ -156,19 +164,20 @@ void LateUpdate()
         Debug.Log("Raycast did not hit anything.");
     }
 }
-    void OnApplicationFocus(bool hasFocus)
+
+void OnApplicationFocus(bool hasFocus)
+{
+    if (hasFocus)
     {
-        if (hasFocus)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
+    else
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+}
 
     private bool IsGameScene()
     {
