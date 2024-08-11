@@ -9,8 +9,8 @@ public class DifficultyScript : MonoBehaviour
     public Button mediumButton;
     public Button hardButton;
 
-    public static string difficulty; // Static variable to hold the difficulty level
-
+    public static string difficulty; 
+    
     void Start()
     {
         easyButton.onClick.AddListener(EasyButton);
@@ -40,6 +40,7 @@ public class DifficultyScript : MonoBehaviour
     private void SetDifficulty(string selectedDifficulty)
     {
         difficulty = selectedDifficulty;
+        PlayerPrefs.SetString("SelectedDifficulty", difficulty); // Store the selected difficulty
     }
 
     public void DifficultyBackButton()

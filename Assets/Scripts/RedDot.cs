@@ -5,7 +5,6 @@ public class RedDot : MonoBehaviour
 {
     private RedDotSpawner spawner;
     private float respawnDelay;
-    public static string difficulty;
 
     public void Initialize(RedDotSpawner spawner, float respawnDelay)
     {
@@ -14,14 +13,14 @@ public class RedDot : MonoBehaviour
     }
 
     public void HandleClick()
-{
-    Debug.Log("Red dot clicked!");
-    spawner.RespawnRedDot(respawnDelay);
+    {
+        Debug.Log("Red dot clicked!");
+        spawner.RespawnRedDot(respawnDelay);
 
-    ScoreManager.Instance?.AddScore(1);
+        ScoreManager.Instance?.AddScore(1);
 
-    Destroy(gameObject);
-}
+        Destroy(gameObject);
+    }
 
     void OnMouseDown()
     {

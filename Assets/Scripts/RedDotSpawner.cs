@@ -6,7 +6,8 @@ public class RedDotSpawner : MonoBehaviour
 {
     public GameObject redDotPrefab;
     public Transform wall;
-    private float spawnDelay = 0.3f;
+    private float spawnDelay = 0.5f; // Fixed respawn delay after hit for all difficulties
+    private float disappearDelay; // Delay before disappearing, based on difficulty
 
     private Vector3 wallMin;
     private Vector3 wallMax;
@@ -14,32 +15,38 @@ public class RedDotSpawner : MonoBehaviour
 
     void Start()
     {
-        if (redDotPrefab == null)
-        {
-            Debug.LogError("RedDotPrefab is not assigned in the Inspector");
-        }
+        SetDifficulty();
 
-        if (wall == null)
+        MeshRenderer wallRenderer = wall.GetComponent<MeshRenderer>();
+        if (wallRenderer != null)
         {
-            Debug.LogError("Wall Transform is not assigned in the Inspector");
+            wallMin = wallRenderer.bounds.min;
+            wallMax = wallRenderer.bounds.max;
+
+            SpawnRedDot();
         }
         else
         {
-            MeshRenderer wallRenderer = wall.GetComponent<MeshRenderer>();
-            if (wallRenderer != null)
-            {
-                wallMin = wallRenderer.bounds.min;
-                wallMax = wallRenderer.bounds.max;
+            Debug.LogError("Wall does not have a MeshRenderer component");
+        }
+    }
 
-                // Log the wall boundaries
-                Debug.Log($"Wall Min: {wallMin}, Wall Max: {wallMax}");
-            }
-            else
-            {
-                Debug.LogError("Wall does not have a MeshRenderer component");
-            }
-
-            SpawnRedDot();
+    void SetDifficulty()
+    {
+        switch (DifficultyScript.difficulty)
+        {
+            case "Easy":
+                disappearDelay = float.MaxValue; // Red dot never disappears automatically
+                break;
+            case "Medium":
+                disappearDelay = 1.25f; // Red dot disappears after 1.5 seconds
+                break;
+            case "Hard":
+                disappearDelay = 0.75f; // Red dot disappears after 1 second
+                break;
+            default:
+                disappearDelay = 1.25f; // Default to medium if difficulty is not set
+                break;
         }
     }
 
@@ -65,23 +72,17 @@ public class RedDotSpawner : MonoBehaviour
             wall.position.z - 1.5f // Adjust this value as needed to move the red dot in front of the wall
         );
 
-        Debug.Log($"Spawning Red Dot at: {randomPosition}");
-
         GameObject redDot = Instantiate(redDotPrefab, randomPosition, Quaternion.identity);
         RedDot redDotComponent = redDot.GetComponent<RedDot>();
         if (redDotComponent != null)
         {
-            redDotComponent.Initialize(this, spawnDelay);
+            redDotComponent.Initialize(this, spawnDelay); // Pass the spawnDelay for hit respawn
             Debug.Log("Red Dot spawned successfully");
 
-            // Handle automatic destruction for Medium and Hard difficulties
-            if (RedDot.difficulty == "Medium")
+            // Handle automatic disappearance based on difficulty
+            if (disappearDelay < float.MaxValue)
             {
-                StartCoroutine(DestroyAndRespawn(redDot, 1f));
-            }
-            else if (RedDot.difficulty == "Hard")
-            {
-                StartCoroutine(DestroyAndRespawn(redDot, 0.5f));
+                StartCoroutine(DestroyAndRespawn(redDot, disappearDelay));
             }
         }
         else
@@ -104,7 +105,7 @@ public class RedDotSpawner : MonoBehaviour
 
     public void RespawnRedDot(float delay)
     {
-        StartCoroutine(RespawnRedDotCoroutine(delay));
+        StartCoroutine(RespawnRedDotCoroutine(spawnDelay)); // Use the fixed respawn delay for hits
     }
 
     private IEnumerator RespawnRedDotCoroutine(float delay)
