@@ -16,6 +16,8 @@ public class GameModeSelectionScript : MonoBehaviour
 
     void Start()
     {
+        toggle.isOn = false; // Ensure the toggle is unchecked by default
+
         Flicking.onClick.AddListener(FlickingButton);
         BackButton.onClick.AddListener(GameModeSelectionBackButton); 
         EnemyShooting.onClick.AddListener(EnemyShootingButton);

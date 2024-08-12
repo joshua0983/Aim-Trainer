@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -6,9 +7,23 @@ public class Enemy : MonoBehaviour
     private int currentHealth;
     private EnemySpawner spawner;
 
+    public float strafeSpeed = 0.01f;
+    public float strafeDistance = 30f; 
+
+    private Vector3 strafeDirection;
+    private Vector3 initialPosition;
+
     void Start()
     {
         currentHealth = maxHealth;
+        initialPosition = transform.position; // Store the initial position for distance calculations
+        
+        if (GameModeSelectionScript.StrafeEnabled)
+        {
+            // Initialize strafe direction to a random direction
+            strafeDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+            StartCoroutine(Strafe());
+        }
     }
 
     public void Initialize(EnemySpawner spawner)
@@ -16,47 +31,79 @@ public class Enemy : MonoBehaviour
         this.spawner = spawner;
     }
 
-    public void HandleHit(bool isHeadshot)
+   private IEnumerator Strafe()
 {
-    Debug.Log($"HandleHit called. Is headshot: {isHeadshot}"); // Log at the start
+    while (true)
+    {
+        // Pick a direction and duration for the strafe
+        strafeDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+        float strafeDuration = Random.Range(0.5f, 1f); // Random duration between 0.5 and 1 second
 
-    if (isHeadshot)
-    {
-        Debug.Log("Headshot detected! Setting health to 0.");
-        currentHealth = 0; // Instantly kill the enemy
-    }
-    else
-    {
-        currentHealth--;
-        Debug.Log("Body hit detected! Current health: " + currentHealth);
-    }
+        float elapsedTime = 0f;
 
-    Debug.Log($"Health after hit: {currentHealth}");
-    
-    if (currentHealth <= 0)
-    {
-        Debug.Log("Health is 0 or less, destroying enemy.");
-        DestroyEnemy();
+        while (elapsedTime < strafeDuration)
+        {
+            // Move the enemy in the strafe direction
+            Vector3 newPosition = transform.position + strafeDirection * strafeSpeed * Time.deltaTime;
+
+            // Check if the new position would go outside the floor boundaries
+            if (newPosition.x <= spawner.floorMin.x || newPosition.x >= spawner.floorMax.x ||
+                newPosition.z <= spawner.floorMin.z || newPosition.z >= spawner.floorMax.z)
+            {
+                // Reverse direction if hitting the floor boundaries
+                strafeDirection = -strafeDirection;
+            }
+            else
+            {
+                transform.Translate(strafeDirection * strafeSpeed * Time.deltaTime, Space.World);
+            }
+
+            elapsedTime += Time.deltaTime;
+            yield return null; // Continue this every frame
+        }
     }
 }
+
+    public void HandleHit(bool isHeadshot)
+    {
+        Debug.Log($"HandleHit called. Is headshot: {isHeadshot}"); 
+
+        if (isHeadshot)
+        {
+            Debug.Log("Headshot detected! Setting health to 0.");
+            currentHealth = 0; 
+        }
+        else
+        {
+            currentHealth--;
+            Debug.Log("Body hit detected! Current health: " + currentHealth);
+        }
+
+        Debug.Log($"Health after hit: {currentHealth}");
+        
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Health is 0 or less, destroying enemy.");
+            DestroyEnemy();
+        }
+    }
 
     private void DestroyEnemy()
-{
-    Debug.Log("Destroying enemy now.");
-    
-    // Add score
-    ScoreManager.Instance?.AddScore(1); // Adjust score amount as needed
-    
-    // Check if the spawner is not null to avoid null reference exception
-    if (spawner != null)
     {
-        spawner.EnemyDefeated();
+        Debug.Log("Destroying enemy now.");
+        
+        // Add score
+        ScoreManager.Instance?.AddScore(1); 
+        
+        if (spawner != null)
+        {
+            spawner.EnemyDefeated();
+        }
+        else
+        {
+            Debug.LogError("Spawner reference is missing!");
+        }
+        
+        Destroy(gameObject); 
     }
-    else
-    {
-        Debug.LogError("Spawner reference is missing!");
-    }
-    
-    Destroy(gameObject); // Destroy the entire enemy GameObject
-}
 }

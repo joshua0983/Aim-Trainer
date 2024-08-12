@@ -8,8 +8,8 @@ public class EnemySpawner : MonoBehaviour
     public Transform floor;
     public int maxEnemies;
 
-    private Vector3 floorMin;
-    private Vector3 floorMax;
+    public Vector3 floorMin;
+    public Vector3 floorMax;
     private int currentEnemyCount = 0;
 
     // Add a difficulty-based delay before spawning a new enemy

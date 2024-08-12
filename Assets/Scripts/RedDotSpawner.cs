@@ -9,8 +9,8 @@ public class RedDotSpawner : MonoBehaviour
     private float spawnDelay = 0.5f; // Fixed respawn delay after hit for all difficulties
     private float disappearDelay; // Delay before disappearing, based on difficulty
 
-    private Vector3 wallMin;
-    private Vector3 wallMax;
+    public Vector3 wallMin;
+    public Vector3 wallMax;
     private bool isSpawning = false;
 
     void Start()
