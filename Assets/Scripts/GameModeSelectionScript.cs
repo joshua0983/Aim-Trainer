@@ -16,7 +16,8 @@ public class GameModeSelectionScript : MonoBehaviour
 
     void Start()
     {
-        toggle.isOn = false; // Ensure the toggle is unchecked by default
+        StrafeEnabled = PlayerPrefs.GetInt("StrafeEnabled", 0) == 1;
+        toggle.isOn = StrafeEnabled;
 
         Flicking.onClick.AddListener(FlickingButton);
         BackButton.onClick.AddListener(GameModeSelectionBackButton); 

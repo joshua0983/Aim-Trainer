@@ -27,8 +27,8 @@ public class PlayerMotor : MonoBehaviour
 
     public void ProcessMovement(Vector2 input)
     {
-        Vector3 moveDirection = new Vector3(input.x, 0, input.y);
-        controller.Move(transform.TransformDirection(moveDirection) * speed * Time.deltaTime);
+        // Vector3 moveDirection = new Vector3(input.x, 0, input.y);
+        // controller.Move(transform.TransformDirection(moveDirection) * speed * Time.deltaTime);
 
         // Apply gravity if not grounded
         if (!isGrounded)

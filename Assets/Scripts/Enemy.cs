@@ -7,23 +7,46 @@ public class Enemy : MonoBehaviour
     private int currentHealth;
     private EnemySpawner spawner;
 
-    public float strafeSpeed = 0.01f;
-    public float strafeDistance = 30f; 
+    [SerializeField]
+    private float _strafeSpeed = 3f; // Match this to the RedDot strafeSpeed
+    public float strafeSpeed
+    {
+        get { return _strafeSpeed; }
+        set
+        {
+            Debug.Log($"strafeSpeed changed from {_strafeSpeed} to {value}");
+            _strafeSpeed = value;
+        }
+    }
+
+    public float strafeDistance = 30f; // Maximum distance the enemy can move from its original position
+    private float raycastBufferDistance = 0.5f; // Small buffer distance before reversing direction
 
     private Vector3 strafeDirection;
     private Vector3 initialPosition;
+    private Rigidbody rb;
+
+    public Vector3 safeZoneCenter;
+    public float safeZoneRadius = 5f; // Radius of the safe zone around the player
 
     void Start()
     {
         currentHealth = maxHealth;
         initialPosition = transform.position; // Store the initial position for distance calculations
-        
+        rb = GetComponent<Rigidbody>(); // Get the Rigidbody component
+
         if (GameModeSelectionScript.StrafeEnabled)
         {
             // Initialize strafe direction to a random direction
             strafeDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
             StartCoroutine(Strafe());
         }
+
+        // Set the player's position as the center of the safe zone
+        safeZoneCenter = FindObjectOfType<PlayerMotor>().transform.position;
+
+        // Log initial setup values
+        Debug.Log($"Enemy Initialized with strafeSpeed: {strafeSpeed}, strafeDirection: {strafeDirection}, initialPosition: {initialPosition}, safeZoneCenter: {safeZoneCenter}");
     }
 
     public void Initialize(EnemySpawner spawner)
@@ -31,67 +54,85 @@ public class Enemy : MonoBehaviour
         this.spawner = spawner;
     }
 
-   private IEnumerator Strafe()
-{
-    while (true)
+    private void FixedUpdate()
     {
-        // Pick a direction and duration for the strafe
-        strafeDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-        float strafeDuration = Random.Range(0.5f, 1f); // Random duration between 0.5 and 1 second
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < strafeDuration)
+        if (GameModeSelectionScript.StrafeEnabled && rb != null)
         {
-            // Move the enemy in the strafe direction
-            Vector3 newPosition = transform.position + strafeDirection * strafeSpeed * Time.deltaTime;
+            // Adjusted Raycast distance to include a buffer
+            float raycastDistance = strafeSpeed * Time.fixedDeltaTime + raycastBufferDistance;
 
-            // Check if the new position would go outside the floor boundaries
-            if (newPosition.x <= spawner.floorMin.x || newPosition.x >= spawner.floorMax.x ||
-                newPosition.z <= spawner.floorMin.z || newPosition.z >= spawner.floorMax.z)
+            // Check for collisions using Raycast
+            if (Physics.Raycast(rb.position, strafeDirection, out RaycastHit hitInfo, raycastDistance))
             {
-                // Reverse direction if hitting the floor boundaries
+                // If a collision is detected, reverse the direction
                 strafeDirection = -strafeDirection;
+                Debug.Log($"Collision detected with {hitInfo.collider.name}, reversing direction. New strafeDirection: {strafeDirection}");
             }
             else
             {
-                transform.Translate(strafeDirection * strafeSpeed * Time.deltaTime, Space.World);
-            }
+                // Calculate the new position
+                Vector3 newPosition = rb.position + strafeDirection * strafeSpeed * Time.fixedDeltaTime;
 
-            elapsedTime += Time.deltaTime;
-            yield return null; // Continue this every frame
+                // Log movement details
+                Debug.Log($"FixedUpdate - newPosition: {newPosition}, rb.position: {rb.position}, strafeDirection: {strafeDirection}, Time.fixedDeltaTime: {Time.fixedDeltaTime}, strafeSpeed: {strafeSpeed}");
+
+                // Check if the new position would go outside the floor boundaries or enter the safe zone
+                if (newPosition.x <= spawner.floorMin.x + raycastBufferDistance || newPosition.x >= spawner.floorMax.x - raycastBufferDistance ||
+                    newPosition.z <= spawner.floorMin.z + raycastBufferDistance || newPosition.z >= spawner.floorMax.z - raycastBufferDistance ||
+                    Vector3.Distance(newPosition, safeZoneCenter) <= safeZoneRadius)
+                {
+                    // Reverse direction if hitting the floor boundaries or entering the safe zone
+                    strafeDirection = -strafeDirection;
+                    Debug.Log($"Reversing Direction - new strafeDirection: {strafeDirection}");
+                }
+                else
+                {
+                    rb.MovePosition(newPosition);
+                }
+            }
         }
     }
-}
+
+    private IEnumerator Strafe()
+    {
+        while (true)
+        {
+            // Pick a direction and duration for the strafe
+            strafeDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+            float strafeDuration = Random.Range(0.5f, 1f); // Random duration between 0.5 and 1 second
+
+            // Log strafe direction and duration
+            Debug.Log($"Strafe Coroutine - strafeDirection: {strafeDirection}, strafeDuration: {strafeDuration}");
+
+            float elapsedTime = 0f;
+
+            while (elapsedTime < strafeDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null; // Continue this every frame
+            }
+        }
+    }
 
     public void HandleHit(bool isHeadshot)
     {
-        Debug.Log($"HandleHit called. Is headshot: {isHeadshot}"); 
-
         if (isHeadshot)
         {
-            Debug.Log("Headshot detected! Setting health to 0.");
             currentHealth = 0; 
         }
         else
         {
             currentHealth--;
-            Debug.Log("Body hit detected! Current health: " + currentHealth);
         }
-
-        Debug.Log($"Health after hit: {currentHealth}");
         
         if (currentHealth <= 0)
         {
-            Debug.Log("Health is 0 or less, destroying enemy.");
             DestroyEnemy();
         }
     }
 
     private void DestroyEnemy()
     {
-        Debug.Log("Destroying enemy now.");
-        
         // Add score
         ScoreManager.Instance?.AddScore(1); 
         
