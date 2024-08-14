@@ -26,11 +26,14 @@ Aim Trainer is a Unity-based 3D game designed to help players improve their aimi
 
 Flicking without strafing
 
-https://github.com/user-attachments/assets/90e88414-9571-4ec9-86cb-5684f52b5c23
+https://github.com/user-attachments/assets/7f1170f8-83ed-4a8c-89e4-3ae61249968a
 
 EnemyShooting with strafing
 
-https://github.com/user-attachments/assets/cc22e820-d91d-44b2-8000-f5cfa8cc0066
+https://github.com/user-attachments/assets/df05123e-0239-4416-a306-66ac0bd9d9e4
+
+
+
 
 
 
