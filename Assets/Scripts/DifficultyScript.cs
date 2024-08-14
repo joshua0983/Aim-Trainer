@@ -40,7 +40,7 @@ public class DifficultyScript : MonoBehaviour
     private void SetDifficulty(string selectedDifficulty)
     {
         difficulty = selectedDifficulty;
-        PlayerPrefs.SetString("SelectedDifficulty", difficulty); // Store the selected difficulty
+        PlayerPrefs.SetString("SelectedDifficulty", difficulty);
     }
 
     public void DifficultyBackButton()

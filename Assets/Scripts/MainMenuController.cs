@@ -8,16 +8,9 @@ public class MainMenuScript : MonoBehaviour
     public Button OptionsButton;
     public Button ExitButton;
 
-    private PlayerLook playerLook;
-
     void Start()
     {
-        // Check if buttons are assigned in the Inspector
-        if (PlayButton == null || OptionsButton == null || ExitButton == null)
-        {
-            Debug.LogError("One or more buttons are not assigned in the Inspector.");
-            return;
-        }
+        if (PlayButton == null || OptionsButton == null || ExitButton == null) return;
 
         PlayButton.onClick.AddListener(PlayGame);
         OptionsButton.onClick.AddListener(OpenOptions);

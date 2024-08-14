@@ -5,12 +5,11 @@ public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance;
 
-    public TextMeshProUGUI scoreText; // Change from Text to TextMeshProUGUI
+    public TextMeshProUGUI scoreText;
     private int score = 0;
 
     private void Awake()
     {
-        // Singleton pattern to ensure only one instance of ScoreManager exists
         if (Instance == null)
         {
             Instance = this;
@@ -37,10 +36,6 @@ public class ScoreManager : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = score.ToString();
-        }
-        else
-        {
-            Debug.LogError("ScoreText is not assigned!");
         }
     }
 

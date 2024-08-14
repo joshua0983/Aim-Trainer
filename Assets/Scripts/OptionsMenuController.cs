@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -25,7 +24,6 @@ public class OptionsMenuController : MonoBehaviour
 
     void Start()
     {
-        // Retrieve the saved sensitivity value from PlayerPrefs or set a default value
         sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f);
         UpdateSensitivityText();
 
@@ -33,15 +31,10 @@ public class OptionsMenuController : MonoBehaviour
         decreaseButton.onClick.AddListener(DecreaseSensitivity);
         backButton.onClick.AddListener(BackButton);
 
-        // Find PlayerLook in the scene
         playerLook = FindObjectOfType<PlayerLook>();
         if (playerLook != null)
         {
             playerLook.SetSensitivity(sensitivity);
-        }
-        else
-        {
-            Debug.LogError("PlayerLook component not found in the scene.");
         }
     }
 
@@ -76,14 +69,11 @@ public class OptionsMenuController : MonoBehaviour
         {
             playerLook.SetSensitivity(sensitivity);
         }
-        PlayerPrefs.SetFloat("Sensitivity", sensitivity); // Save sensitivity to PlayerPrefs
+        PlayerPrefs.SetFloat("Sensitivity", sensitivity);
     }
 
     void BackButton()
     {
-        Debug.Log("BackButton pressed");
-        Debug.Log("Previous Scene: " + NavigationManager.PreviousScene);
-
         if (CameFromGame)
         {
             optionsMenuUI.SetActive(false);

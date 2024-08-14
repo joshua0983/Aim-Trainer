@@ -1,13 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RedDotSpawner : MonoBehaviour
 {
     public GameObject redDotPrefab;
     public Transform wall;
-    private float spawnDelay = 0.5f; // Fixed respawn delay after hit for all difficulties
-    private float disappearDelay; // Delay before disappearing, based on difficulty
+    private float spawnDelay = 0.5f;
+    private float disappearDelay;
 
     public Vector3 wallMin;
     public Vector3 wallMax;
@@ -25,10 +24,6 @@ public class RedDotSpawner : MonoBehaviour
 
             SpawnRedDot();
         }
-        else
-        {
-            Debug.LogError("Wall does not have a MeshRenderer component");
-        }
     }
 
     void SetDifficulty()
@@ -36,50 +31,43 @@ public class RedDotSpawner : MonoBehaviour
         switch (DifficultyScript.difficulty)
         {
             case "Easy":
-                disappearDelay = float.MaxValue; // Red dot never disappears automatically
+                disappearDelay = float.MaxValue;
                 break;
             case "Medium":
-                disappearDelay = 1.25f; // Red dot disappears after 1.5 seconds
+                disappearDelay = 1.25f;
                 break;
             case "Hard":
-                disappearDelay = 0.75f; // Red dot disappears after 1 second
+                disappearDelay = 0.75f;
                 break;
             default:
-                disappearDelay = 1.25f; // Default to medium if difficulty is not set
+                disappearDelay = 1.25f;
                 break;
         }
     }
 
     void SpawnRedDot()
     {
-        if (redDotPrefab == null || wall == null || isSpawning)
-        {
-            Debug.LogError("Cannot spawn RedDot because redDotPrefab or wall is not assigned or another red dot is already spawning");
-            return;
-        }
+        if (redDotPrefab == null || wall == null || isSpawning) return;
 
         isSpawning = true;
 
-        // Adjust the boundaries to limit the spawn area
-        float xRangeMin = wallMin.x + (wallMax.x - wallMin.x) * 0.2f; // 20% from the left
-        float xRangeMax = wallMax.x - (wallMax.x - wallMin.x) * 0.2f; // 20% from the right
-        float yRangeMin = wallMin.y + (wallMax.y - wallMin.y) * 0.1f; // 10% from the bottom
-        float yRangeMax = wallMax.y - (wallMax.y - wallMin.y) * 0.1f; // 10% from the top
+        float xRangeMin = wallMin.x + (wallMax.x - wallMin.x) * 0.2f;
+        float xRangeMax = wallMax.x - (wallMax.x - wallMin.x) * 0.2f;
+        float yRangeMin = wallMin.y + (wallMax.y - wallMin.y) * 0.1f;
+        float yRangeMax = wallMax.y - (wallMax.y - wallMin.y) * 0.1f;
 
         Vector3 randomPosition = new Vector3(
             Random.Range(xRangeMin, xRangeMax),
             Random.Range(yRangeMin, yRangeMax),
-            wall.position.z - 1.5f // Adjust this value as needed to move the red dot in front of the wall
+            wall.position.z - 1.5f
         );
 
         GameObject redDot = Instantiate(redDotPrefab, randomPosition, Quaternion.identity);
         RedDot redDotComponent = redDot.GetComponent<RedDot>();
         if (redDotComponent != null)
         {
-            redDotComponent.Initialize(this, spawnDelay); // Pass the spawnDelay for hit respawn
-            Debug.Log("Red Dot spawned successfully");
+            redDotComponent.Initialize(this, spawnDelay);
 
-            // Handle automatic disappearance based on difficulty
             if (disappearDelay < float.MaxValue)
             {
                 StartCoroutine(DestroyAndRespawn(redDot, disappearDelay));
@@ -87,8 +75,7 @@ public class RedDotSpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogError("RedDotPrefab does not have a RedDot component");
-            isSpawning = false; // Ensure isSpawning is reset if there's an error
+            isSpawning = false;
         }
     }
 
@@ -98,20 +85,20 @@ public class RedDotSpawner : MonoBehaviour
         if (redDot != null)
         {
             Destroy(redDot);
-            isSpawning = false; // Allow spawning again after the delay
+            isSpawning = false;
             SpawnRedDot();
         }
     }
 
     public void RespawnRedDot(float delay)
     {
-        StartCoroutine(RespawnRedDotCoroutine(spawnDelay)); // Use the fixed respawn delay for hits
+        StartCoroutine(RespawnRedDotCoroutine(spawnDelay));
     }
 
     private IEnumerator RespawnRedDotCoroutine(float delay)
     {
         yield return new WaitForSeconds(delay);
-        isSpawning = false; // Allow spawning again after the delay
+        isSpawning = false;
         SpawnRedDot();
     }
 }

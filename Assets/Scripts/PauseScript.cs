@@ -8,7 +8,7 @@ public class PauseScript : MonoBehaviour
     public Button OptionsButton;
     public Button ExitToMenuButton;
     public GameObject pauseMenuUI;
-    public GameObject optionsMenuUI; // Reference to duplicated options menu
+    public GameObject optionsMenuUI;
 
     public bool IsPaused { get; private set; } = false;
 
@@ -18,49 +18,46 @@ public class PauseScript : MonoBehaviour
         OptionsButton.onClick.AddListener(OpenOptions);
         ExitToMenuButton.onClick.AddListener(ExitGame);
         pauseMenuUI.SetActive(false);
-        optionsMenuUI.SetActive(false); // Ensure it is inactive by default
+        optionsMenuUI.SetActive(false);
     }
 
     public void PauseGame()
-{
-    pauseMenuUI.SetActive(true);
-    Time.timeScale = 0f;
-    Cursor.lockState = CursorLockMode.None;
-    Cursor.visible = true;
-    IsPaused = true;
-
-    // Pause the timer
-    GameTimer gameTimer = FindObjectOfType<GameTimer>();
-    if (gameTimer != null)
     {
-        gameTimer.PauseTimer();
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        IsPaused = true;
+
+        GameTimer gameTimer = FindObjectOfType<GameTimer>();
+        if (gameTimer != null)
+        {
+            gameTimer.PauseTimer();
+        }
     }
-}
 
-public void ContinueGame()
-{
-    pauseMenuUI.SetActive(false);
-    optionsMenuUI.SetActive(false); // Ensure options menu is inactive
-    Time.timeScale = 1f;
-    Cursor.lockState = CursorLockMode.Locked;
-    Cursor.visible = false;
-    IsPaused = false;
-
-    // Resume the timer
-    GameTimer gameTimer = FindObjectOfType<GameTimer>();
-    if (gameTimer != null)
+    public void ContinueGame()
     {
-        gameTimer.ResumeTimer();
+        pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        IsPaused = false;
+
+        GameTimer gameTimer = FindObjectOfType<GameTimer>();
+        if (gameTimer != null)
+        {
+            gameTimer.ResumeTimer();
+        }
     }
-}
 
     public void OpenOptions()
     {
         pauseMenuUI.SetActive(false);
-        optionsMenuUI.SetActive(true); // Activate the options menu
-        OptionsMenuController.CameFromGame = true; // Indicate we came from the game
-        
-        // Set the options and pause menu references in OptionsMenuController
+        optionsMenuUI.SetActive(true);
+        OptionsMenuController.CameFromGame = true;
+
         OptionsMenuController optionsController = optionsMenuUI.GetComponent<OptionsMenuController>();
         if (optionsController != null)
         {

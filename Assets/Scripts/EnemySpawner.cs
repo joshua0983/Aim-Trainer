@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -12,12 +11,11 @@ public class EnemySpawner : MonoBehaviour
     public Vector3 floorMax;
     private int currentEnemyCount = 0;
 
-    // Add a difficulty-based delay before spawning a new enemy
     private float spawnDelay = 0.5f;
 
     void Start()
     {
-        SetDifficulty(); // Call this to set the appropriate spawn delay and maxEnemies
+        SetDifficulty();
 
         MeshRenderer floorRenderer = floor.GetComponent<MeshRenderer>();
         if (floorRenderer != null)
@@ -30,30 +28,26 @@ public class EnemySpawner : MonoBehaviour
                 SpawnEnemy();
             }
         }
-        else
-        {
-            Debug.LogError("Floor does not have a MeshRenderer component");
-        }
     }
 
     void SetDifficulty()
-{
-    switch (DifficultyScript.difficulty)
     {
-        case "Easy":
-            maxEnemies = 7; 
-            break;
-        case "Medium":
-            maxEnemies = 5; 
-            break;
-        case "Hard":
-            maxEnemies = 3; 
-            break;
-        default:
-            maxEnemies = 7; 
-            break;
+        switch (DifficultyScript.difficulty)
+        {
+            case "Easy":
+                maxEnemies = 7;
+                break;
+            case "Medium":
+                maxEnemies = 5;
+                break;
+            case "Hard":
+                maxEnemies = 3;
+                break;
+            default:
+                maxEnemies = 7;
+                break;
+        }
     }
-}
 
     void SpawnEnemy()
     {
@@ -67,10 +61,6 @@ public class EnemySpawner : MonoBehaviour
         {
             enemyComponent.Initialize(this);
             currentEnemyCount++;
-        }
-        else
-        {
-            Debug.LogError("Enemy prefab does not have an Enemy component");
         }
     }
 

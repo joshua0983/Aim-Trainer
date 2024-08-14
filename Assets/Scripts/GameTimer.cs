@@ -1,8 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using TMPro;
+
 public class GameTimer : MonoBehaviour
 {
     public TextMeshProUGUI timeText;

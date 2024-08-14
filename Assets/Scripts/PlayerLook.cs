@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLook : MonoBehaviour
@@ -12,12 +10,11 @@ public class PlayerLook : MonoBehaviour
 
     void Start()
     {
-        // Retrieve the saved sensitivity value from PlayerPrefs or set a default value
         float savedSensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f);
         SetSensitivity(savedSensitivity);
     }
 
-    public void ProcessLook(Vector2 input) 
+    public void ProcessLook(Vector2 input)
     {
         float mouseX = input.x;
         float mouseY = input.y;
@@ -34,10 +31,9 @@ public class PlayerLook : MonoBehaviour
 
     public void SetSensitivity(float sensitivity)
     {
-        xSensitivity = sensitivity * 100; // Assuming sensitivity range is 0.01 to 1.0, scale it up
+        xSensitivity = sensitivity * 100;
         ySensitivity = sensitivity * 100;
 
-        // Save the sensitivity value to PlayerPrefs
         PlayerPrefs.SetFloat("Sensitivity", sensitivity);
     }
 }
