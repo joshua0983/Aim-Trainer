@@ -47,7 +47,10 @@ public class RedDotSpawner : MonoBehaviour
 
     void SpawnRedDot()
     {
-        if (redDotPrefab == null || wall == null || isSpawning) return;
+        if (redDotPrefab == null || wall == null || isSpawning)
+        {
+            return;
+        }
 
         isSpawning = true;
 
