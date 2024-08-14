@@ -9,7 +9,6 @@ Aim Trainer is a Unity-based 3D game designed to help players improve their aimi
 - **3D Environment**: A simple 3D room with walls where red dots and enemies appear.
 - **Red Dots**: Clickable red dots that spawn at random positions on a specified wall. The red dots can also strafe if the strafing option is enabled.
 - **Enemies**: Spawning enemies that move around the environment and can also strafe. On higher difficulties, enemies will also jump, adding complexity to the gameplay.
-- **Player Movement**: Use WASD keys to move the player around.
 - **Player Look**: Use the mouse to look around and aim.
 - **Shooting**: Press the "Enter" key to interact with the red dots and enemies.
 - **Strafing Mechanics**: Both the red dots and enemies can strafe (move side-to-side) if the strafing option is enabled. The strafing speed and duration vary, providing an additional layer of difficulty.
