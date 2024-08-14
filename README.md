@@ -22,7 +22,6 @@ Aim Trainer is a Unity-based 3D game designed to help players improve their aimi
 - **C#**: Programming language used for scripting in Unity.
 - **.NET**: Framework used to run C# scripts.
 - **Blender**: 3D modeling software used for creating and rigging the gun model and player hand models.
-- **FMOD**: Sound engine used to manage and play sound effects within the game.
 
 Flicking without strafing
 
